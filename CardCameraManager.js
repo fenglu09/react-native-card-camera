@@ -3,10 +3,9 @@
  * Function: 二维码扫描界面
  * Desc:
  */
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import Camera from 'react-native-camera';
-import
-{
+import {
     ActivityIndicator,
     StyleSheet,
     View,
@@ -197,26 +196,26 @@ class CardCameraView extends Component {
     render() {
         const animatedStyle = {
             transform: [
-                {translateY: this.state.animatedValue}
+                { translateY: this.state.animatedValue }
             ]
         };
 
         return (
             <View
-                onLayout={({nativeEvent: e}) => this.measureTotalSize(e)}
+                onLayout={({ nativeEvent: e }) => this.measureTotalSize(e)}
                 style={[styles.container, this.getBottomMenuHeight()]}>
 
                 <View style={[styles.viewfinder, this.getRectSize()]}
-                      onLayout={({nativeEvent: e}) => this.measureRectPosition(e)}>
+                    onLayout={({ nativeEvent: e }) => this.measureRectPosition(e)}>
 
-                    {/*扫描框边线*/}
+                    {/* 扫描框边线 */}
                     <View style={[
                         this.getBorderSize(),
                         this.getBorderColor(),
                         this.getBorderWidth(),
-                    ]}> </View>
+                    ]}></View>
 
-                    {/*扫描框转角-左上角*/}
+                    {/* 扫描框转角-左上角 */}
                     <View style={[
                         this.getCornerColor(),
                         this.getCornerSize(),
@@ -225,9 +224,9 @@ class CardCameraView extends Component {
                             borderLeftWidth: this.props.cornerBorderWidth,
                             borderTopWidth: this.props.cornerBorderWidth,
                         }
-                    ]}/>
+                    ]}></View>
 
-                    {/*扫描框转角-右上角*/}
+                    {/* 扫描框转角-右上角 */}
                     <View style={[
                         this.getCornerColor(),
                         this.getCornerSize(),
@@ -236,12 +235,12 @@ class CardCameraView extends Component {
                             borderRightWidth: this.props.cornerBorderWidth,
                             borderTopWidth: this.props.cornerBorderWidth,
                         }
-                    ]}/>
+                    ]} ></View>
 
-                    {/*加载动画*/}
+                    {/* 加载动画 */}
                     {this.renderLoadingIndicator()}
 
-                    {/*扫描框转角-左下角*/}
+                    {/* 扫描框转角-左下角 */}
                     <View style={[
                         this.getCornerColor(),
                         this.getCornerSize(),
@@ -250,9 +249,9 @@ class CardCameraView extends Component {
                             borderLeftWidth: this.props.cornerBorderWidth,
                             borderBottomWidth: this.props.cornerBorderWidth,
                         }
-                    ]}/>
+                    ]} ></View>
 
-                    {/*扫描框转角-右下角*/}
+                    {/* 扫描框转角-右下角 */}
                     <View style={[
                         this.getCornerColor(),
                         this.getCornerSize(),
@@ -261,7 +260,7 @@ class CardCameraView extends Component {
                             borderRightWidth: this.props.cornerBorderWidth,
                             borderBottomWidth: this.props.cornerBorderWidth,
                         }
-                    ]}/>
+                    ]} ></View>
                 </View>
 
                 <View style={[
@@ -271,7 +270,7 @@ class CardCameraView extends Component {
                         bottom: this.getTopMaskHeight(),
                         width: this.state.topWidth,
                     }
-                ]}/>
+                ]} ></View>
 
                 <View style={[
                     this.getBackgroundColor(),
@@ -280,7 +279,7 @@ class CardCameraView extends Component {
                         height: this.getSideMaskHeight(),
                         width: this.getSideMaskWidth(),
                     }
-                ]}/>
+                ]} ></View>
 
                 <View style={[
                     this.getBackgroundColor(),
@@ -288,7 +287,7 @@ class CardCameraView extends Component {
                     {
                         height: this.getSideMaskHeight(),
                         width: this.getSideMaskWidth(),
-                    }]}/>
+                    }]} ></View>
 
                 <View style={[
                     this.getBackgroundColor(),
@@ -296,9 +295,8 @@ class CardCameraView extends Component {
                     {
                         top: this.getBottomMaskHeight(),
                         width: this.state.topWidth,
-                    }]}/>
+                    }]} ></View>
                 <TouchableOpacity style={[this.getBackgroundColor(), styles.bottomMask, { top: this.getBottomMaskHeight() + 20, width: fontRem * 3.5, height: fontRem * 3.5, borderRadius: fontRem * 3.5, opacity: 1 }]} onPress={this.props.onPress} >
-                    
                 </TouchableOpacity>
             </View>
         );
@@ -322,25 +320,25 @@ export default class CardCamera extends Component {
         isCornerOffset: PropTypes.bool,//边角是否偏移
         cornerOffsetSize: PropTypes.number,
         bottomMenuHeight: PropTypes.number,
-        onPress: PropTypes.func,
+        // onPress: PropTypes.func,
+        onCardCaptured: PropTypes.func,
     };
 
     constructor(props) {
         super(props);
         //通过这句代码屏蔽 YellowBox
-        console.disableYellowBox = true;
+        // console.disableYellowBox = true;
     }
 
     render() {
         return (
-            <View style={{flex: 1}}>
+            <View style={{ flex: 1 }}>
                 <Camera
                     ref={cam => this.camera = cam}
                     onBarCodeRead={this.props.onScanResultReceived}
                     captureTarget={Camera.constants.CaptureTarget.disk}
-                    style={{flex: 1}}
-                >
-                    {/*绘制扫描遮罩*/}
+                    style={{ flex: 1 }} >
+                    {/* 绘制扫描遮罩 */}
                     <CardCameraView
                         maskColor={this.props.maskColor}
                         cornerColor={this.props.cornerColor}
@@ -354,8 +352,7 @@ export default class CardCamera extends Component {
                         cornerOffsetSize={this.props.cornerOffsetSize}
                         isCornerOffset={this.props.isCornerOffset}
                         bottomMenuHeight={this.props.bottomMenuHeight}
-                        onPress={this.takePhoto.bind(this)}
-                    />
+                        onPress={this.takePhoto.bind(this)} />
                 </Camera>
             </View>
         );
@@ -367,10 +364,15 @@ export default class CardCamera extends Component {
      * @memberof CardCamera
      */
     takePhoto() {
-        return this.camera.capture();
-        // this.camera.capture()
-        //   .then((data) => {})
-        //   .catch(err => { console.info(err)})        
+        this.camera.capture();
+        this.camera.capture()
+            .then((data) => {
+                let { onCardCaptured } = this.props;
+                onCardCaptured && onCardCaptured(data);
+            })
+            .catch(err => {
+                console.info(err)
+            })
     }
 }
 
