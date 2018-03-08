@@ -361,10 +361,16 @@ export default class CardCamera extends Component {
         );
     }
 
+    /**
+     * @description 拍照
+     * @returns 返回含有照片路径的promise
+     * @memberof CardCamera
+     */
     takePhoto() {
-        this.camera.capture()
-          .then((data) => { alert(data.path)})
-          .catch(err => { console.info(err)})        
+        return this.camera.capture();
+        // this.camera.capture()
+        //   .then((data) => {})
+        //   .catch(err => { console.info(err)})        
     }
 }
 
