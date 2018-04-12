@@ -4,7 +4,8 @@
  * Desc:
  */
 import React, { Component } from 'react';
-import Camera from 'react-native-camera';
+import { RNCamera } from 'react-native-camera';
+// import Camera from 'react-native-camera';
 import {
     ActivityIndicator,
     StyleSheet,
@@ -20,7 +21,7 @@ import {
 import PropTypes from 'prop-types'
 
 export const width = Dimensions.get('window').width
-export const fontRem = (width / 320) * 16
+export const fontRem = (width / 375) * 16
 /**
  * 遮罩界面
  * 单独写一个类，方便拷贝使用
@@ -30,8 +31,8 @@ class CardCameraView extends Component {
         maskColor: '#0000004D',
         cornerColor: '#22ff00',
         borderColor: '#000000',
-        rectHeight: fontRem * 23,
-        rectWidth: fontRem * 13,
+        rectHeight: fontRem * 22.5,
+        rectWidth: fontRem * 13.5,
         borderWidth: 0,
         cornerBorderWidth: 4,
         cornerBorderLength: 20,
@@ -143,6 +144,7 @@ class CardCameraView extends Component {
     //测量扫描框的位置
     measureRectPosition(e) {
         let rectSize = e.layout;
+       
         this.setState({
             topHeight: rectSize.y,
             leftWidth: rectSize.x,
@@ -152,11 +154,13 @@ class CardCameraView extends Component {
     //获取顶部遮罩高度
     getTopMaskHeight() {
         if (this.props.isCornerOffset) {
-            return this.state.topHeight + this.props.rectHeight - this.props.cornerOffsetSize;
+            return this.state.topHeight - this.props.cornerOffsetSize;
+            // return this.state.topHeight + this.props.rectHeight - this.props.cornerOffsetSize;
         } else {
             console.info(this.state.topHeight)
             console.info(this.props.rectHeight)
-            return this.state.topHeight + this.props.rectHeight;
+            return this.state.topHeight
+            // return this.state.topHeight + this.props.rectHeight;
         }
     }
 
@@ -203,101 +207,132 @@ class CardCameraView extends Component {
         return (
             <View
                 onLayout={({ nativeEvent: e }) => this.measureTotalSize(e)}
-                style={[styles.container, this.getBottomMenuHeight()]}>
+                style={{ flex: 1 }}>
+                <View style={styles.container}>
+                    <View style={[styles.viewfinder, this.getRectSize()]}
+                        onLayout={({ nativeEvent: e }) => this.measureRectPosition(e)}>
 
-                <View style={[styles.viewfinder, this.getRectSize()]}
-                    onLayout={({ nativeEvent: e }) => this.measureRectPosition(e)}>
+                        {/* 扫描框边线 */}
+                        <View style={[
+                            this.getBorderSize(),
+                            this.getBorderColor(),
+                            this.getBorderWidth(),
+                        ]}></View>
 
-                    {/* 扫描框边线 */}
+                        {/* 扫描框转角-左上角 */}
+                        <View style={[
+                            this.getCornerColor(),
+                            this.getCornerSize(),
+                            styles.topLeftCorner,
+                            {
+                                borderLeftWidth: this.props.cornerBorderWidth,
+                                borderTopWidth: this.props.cornerBorderWidth,
+                            }
+                        ]}></View>
+
+                        {/* 扫描框转角-右上角 */}
+                        <View style={[
+                            this.getCornerColor(),
+                            this.getCornerSize(),
+                            styles.topRightCorner,
+                            {
+                                borderRightWidth: this.props.cornerBorderWidth,
+                                borderTopWidth: this.props.cornerBorderWidth,
+                            }
+                        ]} ></View>
+
+                        {/* 加载动画 */}
+                        {this.renderLoadingIndicator()}
+
+                        {/* 扫描框转角-左下角 */}
+                        <View style={[
+                            this.getCornerColor(),
+                            this.getCornerSize(),
+                            styles.bottomLeftCorner,
+                            {
+                                borderLeftWidth: this.props.cornerBorderWidth,
+                                borderBottomWidth: this.props.cornerBorderWidth,
+                            }
+                        ]} ></View>
+
+                        {/* 扫描框转角-右下角 */}
+                        <View style={[
+                            this.getCornerColor(),
+                            this.getCornerSize(),
+                            styles.bottomRightCorner,
+                            {
+                                borderRightWidth: this.props.cornerBorderWidth,
+                                borderBottomWidth: this.props.cornerBorderWidth,
+                            }
+                        ]} ></View>
+                    </View>
+
                     <View style={[
-                        this.getBorderSize(),
-                        this.getBorderColor(),
-                        this.getBorderWidth(),
-                    ]}></View>
-
-                    {/* 扫描框转角-左上角 */}
-                    <View style={[
-                        this.getCornerColor(),
-                        this.getCornerSize(),
-                        styles.topLeftCorner,
+                        this.getBackgroundColor(),
+                        styles.topMask,
                         {
-                            borderLeftWidth: this.props.cornerBorderWidth,
-                            borderTopWidth: this.props.cornerBorderWidth,
-                        }
-                    ]}></View>
-
-                    {/* 扫描框转角-右上角 */}
-                    <View style={[
-                        this.getCornerColor(),
-                        this.getCornerSize(),
-                        styles.topRightCorner,
-                        {
-                            borderRightWidth: this.props.cornerBorderWidth,
-                            borderTopWidth: this.props.cornerBorderWidth,
+                            top: 0,
+                            height: this.getTopMaskHeight(),
+                            // bottom: this.getTopMaskHeight(),
+                            width: this.state.topWidth,
                         }
                     ]} ></View>
 
-                    {/* 加载动画 */}
-                    {this.renderLoadingIndicator()}
-
-                    {/* 扫描框转角-左下角 */}
                     <View style={[
-                        this.getCornerColor(),
-                        this.getCornerSize(),
-                        styles.bottomLeftCorner,
+                        this.getBackgroundColor(),
+                        styles.leftMask,
                         {
-                            borderLeftWidth: this.props.cornerBorderWidth,
-                            borderBottomWidth: this.props.cornerBorderWidth,
+                            height: this.getSideMaskHeight(),
+                            width: this.getSideMaskWidth(),
                         }
                     ]} ></View>
 
-                    {/* 扫描框转角-右下角 */}
                     <View style={[
-                        this.getCornerColor(),
-                        this.getCornerSize(),
-                        styles.bottomRightCorner,
+                        this.getBackgroundColor(),
+                        styles.rightMask,
                         {
-                            borderRightWidth: this.props.cornerBorderWidth,
-                            borderBottomWidth: this.props.cornerBorderWidth,
-                        }
-                    ]} ></View>
+                            height: this.getSideMaskHeight(),
+                            width: this.getSideMaskWidth(),
+                        }]} ></View>
+
+                    <View style={[
+                        this.getBackgroundColor(),
+                        styles.bottomMask,
+                        {
+                            bottom: 0,
+                            // height: this.getTopMaskHeight() + 1,
+                            top: this.getBottomMaskHeight(),
+                            width: this.state.topWidth,
+                        }]} ></View>
+                </View>
+                
+                <View style={[{
+                    height: fontRem * 6,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                },
+                this.getBackgroundColor(),
+                ]}>
+                    <TouchableOpacity
+                        activeOpacity={0.8}
+                        style={[this.getBackgroundColor(),
+                        {
+                            backgroundColor: 'white',
+                            width: fontRem * 4,
+                            height: fontRem * 4,
+                            borderRadius: fontRem * 4,
+                            opacity: 1,
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                        }]}
+                        onPress={this.props.onPress} >
+                        <Text style={{
+                            fontSize: fontRem,
+                            color: '#3498DC',
+                        }}>拍照</Text>
+                    </TouchableOpacity>
                 </View>
 
-                <View style={[
-                    this.getBackgroundColor(),
-                    styles.topMask,
-                    {
-                        bottom: this.getTopMaskHeight(),
-                        width: this.state.topWidth,
-                    }
-                ]} ></View>
-
-                <View style={[
-                    this.getBackgroundColor(),
-                    styles.leftMask,
-                    {
-                        height: this.getSideMaskHeight(),
-                        width: this.getSideMaskWidth(),
-                    }
-                ]} ></View>
-
-                <View style={[
-                    this.getBackgroundColor(),
-                    styles.rightMask,
-                    {
-                        height: this.getSideMaskHeight(),
-                        width: this.getSideMaskWidth(),
-                    }]} ></View>
-
-                <View style={[
-                    this.getBackgroundColor(),
-                    styles.bottomMask,
-                    {
-                        top: this.getBottomMaskHeight(),
-                        width: this.state.topWidth,
-                    }]} ></View>
-                <TouchableOpacity style={[this.getBackgroundColor(), styles.bottomMask, { top: this.getBottomMaskHeight() + 20, width: fontRem * 3.5, height: fontRem * 3.5, borderRadius: fontRem * 3.5, opacity: 1 }]} onPress={this.props.onPress} >
-                </TouchableOpacity>
             </View>
         );
     }
@@ -333,10 +368,8 @@ export default class CardCamera extends Component {
     render() {
         return (
             <View style={{ flex: 1 }}>
-                <Camera
+                <RNCamera
                     ref={cam => this.camera = cam}
-                    onBarCodeRead={this.props.onScanResultReceived}
-                    captureTarget={Camera.constants.CaptureTarget.disk}
                     style={{ flex: 1 }} >
                     {/* 绘制扫描遮罩 */}
                     <CardCameraView
@@ -353,7 +386,7 @@ export default class CardCamera extends Component {
                         isCornerOffset={this.props.isCornerOffset}
                         bottomMenuHeight={this.props.bottomMenuHeight}
                         onPress={this.takePhoto.bind(this)} />
-                </Camera>
+                </RNCamera>
             </View>
         );
     }
@@ -364,15 +397,20 @@ export default class CardCamera extends Component {
      * @memberof CardCamera
      */
     takePhoto() {
-        this.camera.capture();
-        this.camera.capture()
-            .then((data) => {
-                let { onCardCaptured } = this.props;
-                onCardCaptured && onCardCaptured(data);
-            })
-            .catch(err => {
-                console.info(err)
-            })
+        // this.camera.capture();
+        this.camera.takePictureAsync({
+            width: 600,
+            height: 800,
+            base64: true,
+            quality: 0.9
+            // jpegQuality: 50,
+        }).then((data) => {
+            let { onCardCaptured } = this.props;
+            console.log(data);
+            onCardCaptured && onCardCaptured(data);
+        }).catch(err => {
+            console.info(err)
+        })
     }
 }
 
@@ -386,12 +424,13 @@ const styles = StyleSheet.create({
         right: 0,
     },
     container: {
+        flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-        position: 'absolute',
-        top: 0,
-        right: 0,
-        left: 0,
+        // position: 'absolute',
+        // top: 0,
+        // right: 0,
+        // left: 0,
     },
     viewfinder: {
         alignItems: 'center',
