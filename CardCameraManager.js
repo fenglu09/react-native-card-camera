@@ -15,13 +15,14 @@ import {
     Text,
     Image,
     TouchableOpacity,
-    Dimensions
+    Dimensions,
 } from 'react-native';
 
 import PropTypes from 'prop-types'
 
 export const width = Dimensions.get('window').width
-export const fontRem = (width / 375) * 16
+
+export const fontRem = (width / 375) * 18
 /**
  * 遮罩界面
  * 单独写一个类，方便拷贝使用
@@ -357,36 +358,57 @@ export default class CardCamera extends Component {
         bottomMenuHeight: PropTypes.number,
         // onPress: PropTypes.func,
         onCardCaptured: PropTypes.func,
+        isShow: PropTypes.bool,
     };
 
     constructor(props) {
         super(props);
         //通过这句代码屏蔽 YellowBox
         // console.disableYellowBox = true;
+        this.state = {
+            showImage: false,
+            uri: '',
+        }
+    }
+
+    componentWillReceiveProps() {
+        this.setState({
+            showImage: false,
+        })
+
     }
 
     render() {
+        let { showImage, uri } = this.state
+        let { maskColor, cornerColor, borderColor, rectHeight, rectWidth, borderWidth, cornerBorderWidth, cornerBorderLength,
+             isLoading, cornerOffsetSize, isCornerOffset, bottomMenuHeight} = this.props
+
         return (
             <View style={{ flex: 1 }}>
-                <RNCamera
-                    ref={cam => this.camera = cam}
-                    style={{ flex: 1 }} >
-                    {/* 绘制扫描遮罩 */}
-                    <CardCameraView
-                        maskColor={this.props.maskColor}
-                        cornerColor={this.props.cornerColor}
-                        borderColor={this.props.borderColor}
-                        rectHeight={this.props.rectHeight}
-                        rectWidth={this.props.rectWidth}
-                        borderWidth={this.props.borderWidth}
-                        cornerBorderWidth={this.props.cornerBorderWidth}
-                        cornerBorderLength={this.props.cornerBorderLength}
-                        isLoading={this.props.isLoading}
-                        cornerOffsetSize={this.props.cornerOffsetSize}
-                        isCornerOffset={this.props.isCornerOffset}
-                        bottomMenuHeight={this.props.bottomMenuHeight}
-                        onPress={this.takePhoto.bind(this)} />
-                </RNCamera>
+                {
+                    showImage ?
+                        <Image style={{ flex: 1 }} source={{ uri : uri }}/>
+                        : 
+                        <RNCamera
+                            ref={cam => this.camera = cam}
+                            style={{ flex: 1, backgroundColor: 'white' }} >
+                            {/* 绘制扫描遮罩 */}
+                            <CardCameraView
+                                maskColor={maskColor}
+                                cornerColor={cornerColor}
+                                borderColor={borderColor}
+                                rectHeight={rectHeight}
+                                rectWidth={rectWidth}
+                                borderWidth={borderWidth}
+                                cornerBorderWidth={cornerBorderWidth}
+                                cornerBorderLength={cornerBorderLength}
+                                isLoading={isLoading}
+                                cornerOffsetSize={cornerOffsetSize}
+                                isCornerOffset={isCornerOffset}
+                                bottomMenuHeight={bottomMenuHeight}
+                                onPress={this.takePhoto.bind(this)} />
+                        </RNCamera>                     
+                }
             </View>
         );
     }
@@ -406,10 +428,16 @@ export default class CardCamera extends Component {
             // jpegQuality: 50,
         }).then((data) => {
             let { onCardCaptured } = this.props;
-            console.log(data);
+            this.setState({
+                showImage: true,
+                uri: data.uri,
+            })
             onCardCaptured && onCardCaptured(data);
         }).catch(err => {
             console.info(err)
+            this.setState({
+                showImage: false,
+            })
         })
     }
 }
