@@ -21,6 +21,7 @@ import {
 import PropTypes from 'prop-types'
 
 export const width = Dimensions.get('window').width
+
 export const fontRem = (width / 375) * 18
 /**
  * 遮罩界面
@@ -374,6 +375,7 @@ export default class CardCamera extends Component {
         this.setState({
             showImage: false,
         })
+
     }
 
     render() {

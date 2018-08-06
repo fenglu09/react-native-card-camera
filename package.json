@@ -7,16 +7,16 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "react-native-camera": "0.7.0",
+    "react-native-camera": "1.0.3"
   },  
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/OYWeijian/react-native-card-camera.git"
+    "url": "git+https://github.com/fenglu09/react-native-card-camera.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/OYWeijian/react-native-card-camera/issues"
+    "url": "https://github.com/fenglu09/react-native-card-camera/issues"
   },
-  "homepage": "https://github.com/OYWeijian/react-native-card-camera#readme"
+  "homepage": "https://github.com/fenglu09/react-native-card-camera#readme"
 }
