@@ -359,7 +359,14 @@ export default class CardCamera extends Component {
         // onPress: PropTypes.func,
         onCardCaptured: PropTypes.func,
         isShow: PropTypes.bool,
+        captureAudio: PropTypes.bool,// add by david 是否开启录音
     };
+    /**  add by david at 2019-10-12 start   */
+    static defaultProps = {
+        captureAudio: false
+    }
+    /**  add by david at 2019-10-12 end */
+
 
     constructor(props) {
         super(props);
@@ -381,7 +388,7 @@ export default class CardCamera extends Component {
     render() {
         let { showImage, uri } = this.state
         let { maskColor, cornerColor, borderColor, rectHeight, rectWidth, borderWidth, cornerBorderWidth, cornerBorderLength,
-             isLoading, cornerOffsetSize, isCornerOffset, bottomMenuHeight} = this.props
+            isLoading, cornerOffsetSize, isCornerOffset, bottomMenuHeight, captureAudio } = this.props
 
         return (
             <View style={{ flex: 1 }}>
@@ -390,6 +397,7 @@ export default class CardCamera extends Component {
                         <Image style={{ flex: 1 }} source={{ uri : uri }}/>
                         : 
                         <RNCamera
+                            captureAudio={captureAudio} // add by david 是否开启录音
                             ref={cam => this.camera = cam}
                             style={{ flex: 1, backgroundColor: 'white' }} >
                             {/* 绘制扫描遮罩 */}
